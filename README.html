@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MNC Wildlife Report — User Guide</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 24px;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+    h1 {
+      font-size: 2em;
+      border-bottom: 2px solid #2d6a4f;
+      padding-bottom: 10px;
+      color: #2d6a4f;
+    }
+    h2 {
+      font-size: 1.4em;
+      color: #2d6a4f;
+      margin-top: 2em;
+      border-bottom: 1px solid #b7e4c7;
+      padding-bottom: 4px;
+    }
+    h3 {
+      font-size: 1.1em;
+      color: #40916c;
+      margin-top: 1.5em;
+    }
+    h4 {
+      font-size: 1em;
+      color: #52b788;
+    }
+    img {
+      max-width: 100%;
+      border: 1px solid #d8e8d8;
+      border-radius: 6px;
+      margin: 16px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      overflow-x: auto;
+      border-left: 4px solid #52b788;
+    }
+    code {
+      background: #f0f7f0;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+      font-size: 0.95em;
+    }
+    th {
+      background: #2d6a4f;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #d8e8d8;
+    }
+    tr:nth-child(even) td {
+      background: #f0f7f0;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #d8e8d8;
+      margin: 2em 0;
+    }
+    blockquote {
+      border-left: 4px solid #52b788;
+      margin: 1em 0;
+      padding: 8px 16px;
+      background: #f0f7f0;
+      color: #444;
+      border-radius: 0 4px 4px 0;
+    }
+    ul, ol {
+      padding-left: 1.5em;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>MNC Wildlife Report — User Guide</h1>
+
+<p>This guide walks you through configuring and running the MNC Wildlife Report workflow, which processes elephant, buffalo, rhino, lion, leopard, cheetah, giraffe, hartebeest, and wildlife incident events from EarthRanger to produce tabular CSV reports, interactive maps, and herd-size charts.</p>
+
+<hr />
+
+<h2>Overview</h2>
+
+<p>The workflow delivers, for each run:</p>
+
+<p><strong>CSV tables</strong></p>
+<ul>
+  <li><strong>total_elephants_events_recorded.csv</strong> — daily count of unique elephant sighting events with a grand total row</li>
+  <li><strong>total_buffalo_events_recorded.csv</strong> — daily count of unique buffalo sighting events with a grand total row</li>
+  <li><strong>total_rhino_events_recorded.csv</strong> — daily count of unique rhino sighting events with a grand total row</li>
+  <li><strong>total_lion_events_recorded.csv</strong> — daily count of unique lion sighting events with a grand total row</li>
+  <li><strong>total_leopard_events_recorded.csv</strong> — daily count of unique leopard sighting events with a grand total row</li>
+  <li><strong>individual_leopard_summary.csv</strong> — leopard sightings grouped by individuals present</li>
+  <li><strong>total_cheetah_events_recorded.csv</strong> — daily count of unique cheetah sighting events with a grand total row</li>
+  <li><strong>individual_cheetah_summary.csv</strong> — cheetah sightings grouped by individuals present</li>
+  <li><strong>wildlife_events_recorded.csv</strong> — raw wildlife incident records with all event fields</li>
+  <li><strong>wildlife_incidents_summary_table.csv</strong> — pivot table of wildlife incidents by type and date</li>
+  <li><strong>wildlife_incidents_recorded_by_date.csv</strong> — daily count of unique wildlife incident events with a grand total row</li>
+</ul>
+
+<p><strong>Maps and charts (HTML + PNG)</strong></p>
+<ul>
+  <li><strong>elephant_sightings_events</strong> — point map of elephant sightings coloured by herd composition</li>
+  <li><strong>elephant_herd_size_bar_chart</strong> — bar chart of elephant herd size distribution across records</li>
+  <li><strong>elephant_herd_types_map</strong> — bubble map of elephant sightings sized by herd size (Blues colormap)</li>
+  <li><strong>buffalo_sightings_events</strong> — point map of buffalo sightings coloured by herd composition</li>
+  <li><strong>buffalo_herd_size_bar_chart</strong> — bar chart of buffalo herd size distribution across records</li>
+  <li><strong>buffalo_herd_types_map</strong> — bubble map of buffalo sightings sized by herd size (Blues colormap)</li>
+  <li><strong>rhino_sightings_events</strong> — point map of rhino sightings on conservancy boundaries and parcels</li>
+  <li><strong>lion_sightings_events</strong> — point map of lion sightings on conservancy boundaries and parcels</li>
+  <li><strong>leopard_sightings_events</strong> — point map of leopard sightings on conservancy boundaries and parcels</li>
+  <li><strong>giraffe_sightings_events</strong> — point map of giraffe sightings on conservancy boundaries and parcels</li>
+  <li><strong>hartebeest_sightings_events</strong> — point map of hartebeest sightings on conservancy boundaries and parcels</li>
+  <li><strong>wildlife_incidents_map</strong> — point map of wildlife incidents coloured by incident type</li>
+</ul>
+
+<hr />
+
+<h2>Prerequisites</h2>
+
+<p>Before running the workflow, ensure you have:</p>
+<ul>
+  <li>Access to an <strong>EarthRanger</strong> instance with sighting and incident events recorded for the analysis period (<code>elephant_sighting_rep</code>, <code>buffalo_sighting_rep</code>, <code>rhino_sighting_rep</code>, <code>lion_sighting_rep</code>, <code>leopardsightingrep</code>, <code>cheetah_sighting_rep</code>, <code>giraffe_sighting</code>, <code>hartebeest_sighting</code>, <code>snare_rep</code>, <code>fire_rep</code>, <code>wildlife_injury_rep</code>, <code>wildlife_treatment_rep</code>, <code>wildlife_carcass_rep</code>)</li>
+  <li>Network access to <strong>Dropbox</strong> so the workflow can download the MNC conservancy boundary and parcels files at runtime</li>
+</ul>
+
+<hr />
+
+<h2>Step-by-Step Configuration</h2>
+
+<h3>Step 1 — Add the Workflow Template</h3>
+
+<p>In the Ecoscope app, navigate to the <strong>Workflow Templates</strong> tab and click <strong>Add Workflow Template</strong> (top-right). In the <strong>Github Link</strong> field that appears, paste the repository URL:</p>
+
+<pre><code>https://github.com/wildlife-dynamics/mnc_wildlife_report.git</code></pre>
+
+<p>Then click <strong>Add Template</strong> to register the template.</p>
+
+<hr />
+
+<h3>Step 2 — Configure the EarthRanger Connection</h3>
+
+<p>Navigate to <strong>Data Sources</strong> and click <strong>Connect</strong>. The <strong>Connect Ecoscope to EarthRanger</strong> dialog will open. Fill in the form:</p>
+
+<table>
+  <thead>
+    <tr><th>Field</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Data Source Name</td><td>A label to identify this connection (e.g. <code>Mara North Conservancy</code>)</td></tr>
+    <tr><td>EarthRanger URL</td><td>Your instance URL (e.g. <code>your-site.pamdas.org</code>)</td></tr>
+    <tr><td>EarthRanger Username</td><td>Your EarthRanger username</td></tr>
+    <tr><td>EarthRanger Password</td><td>Your EarthRanger password</td></tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <strong>Important:</strong> Credentials entered here are <strong>not</strong> validated during setup. Any authentication errors will only appear when the workflow runs.
+</blockquote>
+
+<p>Click <strong>Connect</strong> to save the data source.</p>
+
+<img src="data/screenshots/er_connection.png" alt="EarthRanger Connection" />
+
+<hr />
+
+<h3>Step 3 — Select the Workflow</h3>
+
+<p>Go back to <strong>Workflow Templates</strong>. The newly added template appears as the <strong>mnc_wildlife_report</strong> card (showing the source repository URL). Click the card to open the workflow configuration form.</p>
+
+<hr />
+
+<h3>Step 4 — Configure Workflow Details, Time Range, and EarthRanger Connection</h3>
+
+<p>The configuration form is divided into three sections, each highlighted in the left-hand navigation panel.</p>
+
+<p><strong>Set workflow details</strong></p>
+
+<table>
+  <thead>
+    <tr><th>Field</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Workflow Name</td><td>A short name to identify this run (required)</td></tr>
+    <tr><td>Workflow Description</td><td>Optional notes to differentiate this run from others (e.g. reporting month or site)</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Time range</strong></p>
+
+<table>
+  <thead>
+    <tr><th>Field</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Timezone</td><td>Select the local timezone (e.g. <code>Africa/Nairobi (UTC+03:00)</code>)</td></tr>
+    <tr><td>Since</td><td>Start date and time — all wildlife events from this point are fetched</td></tr>
+    <tr><td>Until</td><td>End date and time of the analysis window</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Connect to ER</strong></p>
+
+<p>Select the EarthRanger data source configured in Step 2 from the <strong>Data Source</strong> dropdown (e.g. <code>Mara North Conservancy</code>).</p>
+
+<p>Once all three sections are filled, click <strong>Submit</strong> to start the workflow.</p>
+
+<img src="data/screenshots/configure_workflow.png" alt="Configure Workflow Details, Time Range, and Connect to ER" />
+
+<hr />
+
+<h2>Running the Workflow</h2>
+
+<p>Once submitted, the runner will:</p>
+
+<ol>
+  <li>Download the MNC community conservancy boundary and parcels files from Dropbox and prepare all geospatial map layers (conservancy boundaries, parcels, and conservancy text labels). Compute a global map zoom level from the overall grazing zones extent.</li>
+  <li>Fetch all 13 event types from EarthRanger for the analysis period; extract the date from each event's timestamp; add a temporal index.</li>
+  <li><strong>Elephant branch</strong> — filter <code>elephant_sighting_rep</code> events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition, herd size, and demographic columns (female, male, sub-adult, under a year); replace missing herd composition with Unspecified; count unique events per day with a grand total row and save as <code>total_elephants_events_recorded.csv</code>; produce a herd-composition point map saved as <code>elephant_sightings_events.html</code> and <code>.png</code>; bin herd sizes into 7 intervals and produce a bar chart saved as <code>elephant_herd_size_bar_chart.html</code> and <code>.png</code>; produce a bubble map sized by herd size saved as <code>elephant_herd_types_map.html</code> and <code>.png</code>.</li>
+  <li><strong>Buffalo branch</strong> — filter <code>buffalo_sighting_rep</code> events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition and herd size; replace missing herd composition with Unspecified; count unique events per day with a grand total row and save as <code>total_buffalo_events_recorded.csv</code>; produce a herd-composition point map saved as <code>buffalo_sightings_events.html</code> and <code>.png</code>; bin herd sizes into 7 intervals and produce a bar chart saved as <code>buffalo_herd_size_bar_chart.html</code> and <code>.png</code>; produce a bubble map sized by herd size saved as <code>buffalo_herd_types_map.html</code> and <code>.png</code>.</li>
+  <li><strong>Rhino branch</strong> — filter <code>rhino_sighting_rep</code> events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as <code>total_rhino_events_recorded.csv</code>; produce a point map saved as <code>rhino_sightings_events.html</code> and <code>.png</code>.</li>
+  <li><strong>Lion branch</strong> — filter <code>lion_sighting_rep</code> events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as <code>total_lion_events_recorded.csv</code>; produce a point map saved as <code>lion_sightings_events.html</code> and <code>.png</code>.</li>
+  <li><strong>Leopard branch</strong> — filter <code>leopardsightingrep</code> events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as <code>total_leopard_events_recorded.csv</code>; produce an individual identity summary grouped by individuals present and save as <code>individual_leopard_summary.csv</code>; produce a point map saved as <code>leopard_sightings_events.html</code> and <code>.png</code>.</li>
+  <li><strong>Cheetah branch</strong> — filter <code>cheetah_sighting_rep</code> events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as <code>total_cheetah_events_recorded.csv</code>; produce an individual identity summary grouped by individuals present and save as <code>individual_cheetah_summary.csv</code>; produce a point map saved as <code>cheetah_sightings_events.html</code> and <code>.png</code>.</li>
+  <li><strong>Giraffe branch</strong> — filter <code>giraffe_sighting</code> events; resolve field IDs to display titles; normalise and flatten event details; produce a point map saved as <code>giraffe_sightings_events.html</code> and <code>.png</code>.</li>
+  <li><strong>Hartebeest branch</strong> — filter <code>hartebeest_sighting</code> events; resolve field IDs to display titles; normalise and flatten event details; produce a point map saved as <code>hartebeest_sightings_events.html</code> and <code>.png</code>.</li>
+  <li><strong>Wildlife incidents branch</strong> — filter <code>snare_rep</code>, <code>fire_rep</code>, <code>wildlife_injury_rep</code>, <code>wildlife_treatment_rep</code>, and <code>wildlife_carcass_rep</code> events; normalise event details; rename raw field keys to human-readable column names; save the full records as <code>wildlife_events_recorded.csv</code>; produce a pivot summary table by incident type and save as <code>wildlife_incidents_summary_table.csv</code>; count unique incidents per day with a grand total row and save as <code>wildlife_incidents_recorded_by_date.csv</code>; produce a point map coloured by incident type saved as <code>wildlife_incidents_map.html</code> and <code>.png</code>.</li>
+  <li>Save all outputs to the directory specified by <code>ECOSCOPE_WORKFLOWS_RESULTS</code>.</li>
+</ol>
+
+<hr />
+
+<h2>Output Files</h2>
+
+<p>All outputs are written to <code>$ECOSCOPE_WORKFLOWS_RESULTS/</code>.</p>
+
+<h3>CSV Tables</h3>
+
+<table>
+  <thead>
+    <tr><th>File</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>total_elephants_events_recorded.csv</code></td>
+      <td>Daily unique elephant sighting count (date, no_of_events) with a grand Total row</td>
+    </tr>
+    <tr>
+      <td><code>total_buffalo_events_recorded.csv</code></td>
+      <td>Daily unique buffalo sighting count (date, no_of_events) with a grand Total row</td>
+    </tr>
+    <tr>
+      <td><code>total_rhino_events_recorded.csv</code></td>
+      <td>Daily unique rhino sighting count (date, no_of_events) with a grand Total row</td>
+    </tr>
+    <tr>
+      <td><code>total_lion_events_recorded.csv</code></td>
+      <td>Daily unique lion sighting count (date, no_of_events) with a grand Total row</td>
+    </tr>
+    <tr>
+      <td><code>total_leopard_events_recorded.csv</code></td>
+      <td>Daily unique leopard sighting count (date, no_of_events) with a grand Total row</td>
+    </tr>
+    <tr>
+      <td><code>individual_leopard_summary.csv</code></td>
+      <td>Leopard sightings grouped by individuals present</td>
+    </tr>
+    <tr>
+      <td><code>total_cheetah_events_recorded.csv</code></td>
+      <td>Daily unique cheetah sighting count (date, no_of_events) with a grand Total row</td>
+    </tr>
+    <tr>
+      <td><code>individual_cheetah_summary.csv</code></td>
+      <td>Cheetah sightings grouped by individuals present</td>
+    </tr>
+    <tr>
+      <td><code>wildlife_events_recorded.csv</code></td>
+      <td>Raw wildlife incident records with all event fields</td>
+    </tr>
+    <tr>
+      <td><code>wildlife_incidents_summary_table.csv</code></td>
+      <td>Pivot table of incident counts by type (Fire, Snare, Wildlife carcass, Injured wildlife, Veterinary treatment)</td>
+    </tr>
+    <tr>
+      <td><code>wildlife_incidents_recorded_by_date.csv</code></td>
+      <td>Daily unique wildlife incident count (date, no_of_events) with a grand Total row</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Maps and Charts</h3>
+
+<table>
+  <thead>
+    <tr><th>File</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>elephant_sightings_events.html</code> / <code>.png</code></td>
+      <td>Elephant sighting locations coloured by herd composition</td>
+    </tr>
+    <tr>
+      <td><code>elephant_herd_size_bar_chart.html</code> / <code>.png</code></td>
+      <td>Bar chart of elephant herd size frequency distribution</td>
+    </tr>
+    <tr>
+      <td><code>elephant_herd_types_map.html</code> / <code>.png</code></td>
+      <td>Bubble map of elephant sightings; point radius proportional to herd size</td>
+    </tr>
+    <tr>
+      <td><code>buffalo_sightings_events.html</code> / <code>.png</code></td>
+      <td>Buffalo sighting locations coloured by herd composition</td>
+    </tr>
+    <tr>
+      <td><code>buffalo_herd_size_bar_chart.html</code> / <code>.png</code></td>
+      <td>Bar chart of buffalo herd size frequency distribution</td>
+    </tr>
+    <tr>
+      <td><code>buffalo_herd_types_map.html</code> / <code>.png</code></td>
+      <td>Bubble map of buffalo sightings; point radius proportional to herd size</td>
+    </tr>
+    <tr>
+      <td><code>rhino_sightings_events.html</code> / <code>.png</code></td>
+      <td>Rhino sighting locations on conservancy boundaries and parcels</td>
+    </tr>
+    <tr>
+      <td><code>lion_sightings_events.html</code> / <code>.png</code></td>
+      <td>Lion sighting locations on conservancy boundaries and parcels</td>
+    </tr>
+    <tr>
+      <td><code>leopard_sightings_events.html</code> / <code>.png</code></td>
+      <td>Leopard sighting locations on conservancy boundaries and parcels</td>
+    </tr>
+    <tr>
+      <td><code>giraffe_sightings_events.html</code> / <code>.png</code></td>
+      <td>Giraffe sighting locations on conservancy boundaries and parcels</td>
+    </tr>
+    <tr>
+      <td><code>hartebeest_sightings_events.html</code> / <code>.png</code></td>
+      <td>Hartebeest sighting locations on conservancy boundaries and parcels</td>
+    </tr>
+    <tr>
+      <td><code>wildlife_incidents_map.html</code> / <code>.png</code></td>
+      <td>Wildlife incident locations coloured by incident type</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
