@@ -3250,6 +3250,56 @@ def main(params: Params):
         .call()
     )
 
+    unique_lions_summary = (
+        summarize_df.validate()
+        .set_task_instance_id("unique_lions_summary")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            groupby_cols=["pride"],
+            summary_params=[
+                {
+                    "display_name": "no_of_events",
+                    "aggregator": "nunique",
+                    "column": "id",
+                }
+            ],
+            reset_index=True,
+            df=map_lion_column_values,
+            **(params_dict.get("unique_lions_summary") or {}),
+        )
+        .call()
+    )
+
+    persist_lions_df = (
+        persist_df.validate()
+        .set_task_instance_id("persist_lions_df")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            filetype="csv",
+            filename="individual_lions_summary",
+            df=unique_lions_summary,
+            **(params_dict.get("persist_lions_df") or {}),
+        )
+        .call()
+    )
+
     exclude_lion_outliers = (
         exclude_geom_outliers.validate()
         .set_task_instance_id("exclude_lion_outliers")

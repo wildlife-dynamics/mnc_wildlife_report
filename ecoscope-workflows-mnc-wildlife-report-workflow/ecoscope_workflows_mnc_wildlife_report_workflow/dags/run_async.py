@@ -285,6 +285,8 @@ def main(params: Params):
         "lion_obs_summary": ["map_lion_column_values"],
         "include_lion_totals": ["lion_obs_summary"],
         "persist_lion_df": ["include_lion_totals"],
+        "unique_lions_summary": ["map_lion_column_values"],
+        "persist_lions_df": ["unique_lions_summary"],
         "exclude_lion_outliers": ["map_lion_column_values"],
         "remove_lion_invalid_geoms": ["exclude_lion_outliers"],
         "apply_lion_events_colormap": ["remove_lion_invalid_geoms"],
@@ -3680,6 +3682,58 @@ def main(params: Params):
                 "df": DependsOn("include_lion_totals"),
             }
             | (params_dict.get("persist_lion_df") or {}),
+            method="call",
+        ),
+        "unique_lions_summary": Node(
+            async_task=summarize_df.validate()
+            .set_task_instance_id("unique_lions_summary")
+            .handle_errors()
+            .with_tracing()
+            .skipif(
+                conditions=[
+                    any_is_empty_df,
+                    any_dependency_skipped,
+                ],
+                unpack_depth=1,
+            )
+            .set_executor("lithops"),
+            partial={
+                "groupby_cols": [
+                    "pride",
+                ],
+                "summary_params": [
+                    {
+                        "display_name": "no_of_events",
+                        "aggregator": "nunique",
+                        "column": "id",
+                    },
+                ],
+                "reset_index": True,
+                "df": DependsOn("map_lion_column_values"),
+            }
+            | (params_dict.get("unique_lions_summary") or {}),
+            method="call",
+        ),
+        "persist_lions_df": Node(
+            async_task=persist_df.validate()
+            .set_task_instance_id("persist_lions_df")
+            .handle_errors()
+            .with_tracing()
+            .skipif(
+                conditions=[
+                    any_is_empty_df,
+                    any_dependency_skipped,
+                ],
+                unpack_depth=1,
+            )
+            .set_executor("lithops"),
+            partial={
+                "root_path": os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+                "filetype": "csv",
+                "filename": "individual_lions_summary",
+                "df": DependsOn("unique_lions_summary"),
+            }
+            | (params_dict.get("persist_lions_df") or {}),
             method="call",
         ),
         "exclude_lion_outliers": Node(

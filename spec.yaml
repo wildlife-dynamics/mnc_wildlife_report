@@ -2004,6 +2004,36 @@ workflow:
       filename: total_lion_events_recorded
       df: ${{ workflow.include_lion_totals.return }}
 
+  - name: Individual lions present summary table 
+    id: unique_lions_summary
+    task: summarize_df
+    skipif:
+      conditions:
+        - any_is_empty_df
+        - any_dependency_skipped
+    partial:  
+      groupby_cols:
+        - pride
+      summary_params:
+        - display_name: no_of_events
+          aggregator: nunique
+          column : id 
+      reset_index: true 
+      df: ${{ workflow.map_lion_column_values.return }}
+  
+  - name: Persist unique lions summary table 
+    id: persist_lions_df 
+    task: persist_df 
+    skipif:
+      conditions:
+        - any_is_empty_df
+        - any_dependency_skipped
+    partial: 
+      root_path: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      filetype: csv 
+      filename: individual_lions_summary 
+      df: ${{ workflow.unique_lions_summary.return }}
+  
 # Lion pride sighting map
   - name: Exclude geom outliers from lion events
     id: exclude_lion_outliers

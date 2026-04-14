@@ -4775,6 +4775,76 @@ persist_lion_df = (
 
 
 # %% [markdown]
+# ## Individual lions present summary table
+
+# %%
+# parameters
+
+unique_lions_summary_params = dict()
+
+# %%
+# call the task
+
+
+unique_lions_summary = (
+    summarize_df.set_task_instance_id("unique_lions_summary")
+    .handle_errors()
+    .with_tracing()
+    .skipif(
+        conditions=[
+            any_is_empty_df,
+            any_dependency_skipped,
+        ],
+        unpack_depth=1,
+    )
+    .partial(
+        groupby_cols=["pride"],
+        summary_params=[
+            {"display_name": "no_of_events", "aggregator": "nunique", "column": "id"}
+        ],
+        reset_index=True,
+        df=map_lion_column_values,
+        **unique_lions_summary_params,
+    )
+    .call()
+)
+
+
+# %% [markdown]
+# ## Persist unique lions summary table
+
+# %%
+# parameters
+
+persist_lions_df_params = dict()
+
+# %%
+# call the task
+
+
+persist_lions_df = (
+    persist_df.set_task_instance_id("persist_lions_df")
+    .handle_errors()
+    .with_tracing()
+    .skipif(
+        conditions=[
+            any_is_empty_df,
+            any_dependency_skipped,
+        ],
+        unpack_depth=1,
+    )
+    .partial(
+        root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+        filetype="csv",
+        filename="individual_lions_summary",
+        df=unique_lions_summary,
+        **persist_lions_df_params,
+    )
+    .call()
+)
+
+
+# %% [markdown]
 # ## Exclude geom outliers from lion events
 
 # %%
