@@ -354,7 +354,7 @@ def main(params: Params):
             "combine_custom_cheetah",
             "global_zoom_value",
         ],
-        "persist_cheetah_urls": ["draw_leopard_map"],
+        "persist_cheetah_urls": ["draw_cheetah_map"],
         "convert_cheetah_png": ["persist_cheetah_urls"],
         "map_giraffe_sighting": ["drop_giraffe_prefix"],
         "exclude_giraffe_outliers": ["map_giraffe_sighting"],
@@ -4767,7 +4767,7 @@ def main(params: Params):
             .set_executor("lithops"),
             partial={
                 "root_path": os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
-                "text": DependsOn("draw_leopard_map"),
+                "text": DependsOn("draw_cheetah_map"),
                 "filename": "cheetah_sightings_events.html",
             }
             | (params_dict.get("persist_cheetah_urls") or {}),

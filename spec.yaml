@@ -2659,7 +2659,7 @@ workflow:
         - any_dependency_skipped
     partial:
       root_path: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
-      text: ${{ workflow.draw_leopard_map.return }}
+      text: ${{ workflow.draw_cheetah_map.return }}
       filename: cheetah_sightings_events.html 
 
   - name: Convert cheetah map to png
