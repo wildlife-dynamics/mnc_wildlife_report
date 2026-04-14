@@ -6250,7 +6250,7 @@ persist_cheetah_urls = (
     .partial(
         root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
         text=draw_leopard_map,
-        filename="leopard_sightings_events.html",
+        filename="cheetah_sightings_events.html",
         **persist_cheetah_urls_params,
     )
     .call()

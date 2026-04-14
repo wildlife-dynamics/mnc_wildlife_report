@@ -4247,7 +4247,7 @@ def main(params: Params):
         .partial(
             root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
             text=draw_leopard_map,
-            filename="leopard_sightings_events.html",
+            filename="cheetah_sightings_events.html",
             **(params_dict.get("persist_cheetah_urls") or {}),
         )
         .call()

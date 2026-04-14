@@ -2630,7 +2630,7 @@ workflow:
     partial:
       root_path: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
       text: ${{ workflow.draw_leopard_map.return }}
-      filename: leopard_sightings_events.html 
+      filename: cheetah_sightings_events.html 
 
   - name: Convert cheetah map to png
     id: convert_cheetah_png
