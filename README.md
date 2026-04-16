@@ -13,6 +13,7 @@ The workflow delivers, for each run:
 - **total_buffalo_events_recorded.csv** — daily count of unique buffalo sighting events with a grand total row
 - **total_rhino_events_recorded.csv** — daily count of unique rhino sighting events with a grand total row
 - **total_lion_events_recorded.csv** — daily count of unique lion sighting events with a grand total row
+- **individual_lions_summary.csv** — lion sightings grouped by pride
 - **total_leopard_events_recorded.csv** — daily count of unique leopard sighting events with a grand total row
 - **individual_leopard_summary.csv** — leopard sightings grouped by individuals present
 - **total_cheetah_events_recorded.csv** — daily count of unique cheetah sighting events with a grand total row
@@ -31,6 +32,7 @@ The workflow delivers, for each run:
 - **rhino_sightings_events** — point map of rhino sightings on conservancy boundaries and parcels
 - **lion_sightings_events** — point map of lion sightings on conservancy boundaries and parcels
 - **leopard_sightings_events** — point map of leopard sightings on conservancy boundaries and parcels
+- **cheetah_sightings_events** — point map of cheetah sightings on conservancy boundaries and parcels
 - **giraffe_sightings_events** — point map of giraffe sightings on conservancy boundaries and parcels
 - **hartebeest_sightings_events** — point map of hartebeest sightings on conservancy boundaries and parcels
 - **wildlife_incidents_map** — point map of wildlife incidents coloured by incident type
@@ -123,7 +125,7 @@ Once submitted, the runner will:
 3. **Elephant branch** — filter `elephant_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition, herd size, and demographic columns (female, male, sub-adult, under a year); replace missing herd composition with Unspecified; count unique events per day with a grand total row and save as `total_elephants_events_recorded.csv`; produce a herd-composition point map saved as `elephant_sightings_events.html` and `.png`; bin herd sizes into 7 intervals and produce a bar chart saved as `elephant_herd_size_bar_chart.html` and `.png`; produce a bubble map sized by herd size saved as `elephant_herd_types_map.html` and `.png`.
 4. **Buffalo branch** — filter `buffalo_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition and herd size; replace missing herd composition with Unspecified; count unique events per day with a grand total row and save as `total_buffalo_events_recorded.csv`; produce a herd-composition point map saved as `buffalo_sightings_events.html` and `.png`; bin herd sizes into 7 intervals and produce a bar chart saved as `buffalo_herd_size_bar_chart.html` and `.png`; produce a bubble map sized by herd size saved as `buffalo_herd_types_map.html` and `.png`.
 5. **Rhino branch** — filter `rhino_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_rhino_events_recorded.csv`; produce a point map saved as `rhino_sightings_events.html` and `.png`.
-6. **Lion branch** — filter `lion_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_lion_events_recorded.csv`; produce a point map saved as `lion_sightings_events.html` and `.png`.
+6. **Lion branch** — filter `lion_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_lion_events_recorded.csv`; produce a pride-grouped individual summary and save as `individual_lions_summary.csv`; produce a point map saved as `lion_sightings_events.html` and `.png`.
 7. **Leopard branch** — filter `leopardsightingrep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_leopard_events_recorded.csv`; produce an individual identity summary grouped by individuals present and save as `individual_leopard_summary.csv`; produce a point map saved as `leopard_sightings_events.html` and `.png`.
 8. **Cheetah branch** — filter `cheetah_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_cheetah_events_recorded.csv`; produce an individual identity summary grouped by individuals present and save as `individual_cheetah_summary.csv`; produce a point map saved as `cheetah_sightings_events.html` and `.png`.
 9. **Giraffe branch** — filter `giraffe_sighting` events; resolve field IDs to display titles; normalise and flatten event details; produce a point map saved as `giraffe_sightings_events.html` and `.png`.
@@ -145,6 +147,7 @@ All outputs are written to `$ECOSCOPE_WORKFLOWS_RESULTS/`.
 | `total_buffalo_events_recorded.csv` | Daily unique buffalo sighting count (date, no_of_events) with a grand Total row |
 | `total_rhino_events_recorded.csv` | Daily unique rhino sighting count (date, no_of_events) with a grand Total row |
 | `total_lion_events_recorded.csv` | Daily unique lion sighting count (date, no_of_events) with a grand Total row |
+| `individual_lions_summary.csv` | Lion sightings grouped by pride |
 | `total_leopard_events_recorded.csv` | Daily unique leopard sighting count (date, no_of_events) with a grand Total row |
 | `individual_leopard_summary.csv` | Leopard sightings grouped by individuals present |
 | `total_cheetah_events_recorded.csv` | Daily unique cheetah sighting count (date, no_of_events) with a grand Total row |
@@ -166,6 +169,7 @@ All outputs are written to `$ECOSCOPE_WORKFLOWS_RESULTS/`.
 | `rhino_sightings_events.html` / `.png` | Rhino sighting locations on conservancy boundaries and parcels |
 | `lion_sightings_events.html` / `.png` | Lion sighting locations on conservancy boundaries and parcels |
 | `leopard_sightings_events.html` / `.png` | Leopard sighting locations on conservancy boundaries and parcels |
+| `cheetah_sightings_events.html` / `.png` | Cheetah sighting locations on conservancy boundaries and parcels |
 | `giraffe_sightings_events.html` / `.png` | Giraffe sighting locations on conservancy boundaries and parcels |
 | `hartebeest_sightings_events.html` / `.png` | Hartebeest sighting locations on conservancy boundaries and parcels |
 | `wildlife_incidents_map.html` / `.png` | Wildlife incident locations coloured by incident type |

@@ -137,8 +137,8 @@ story += [
       "as base layers on all maps."),
     sp(4),
     p("The workflow delivers:"),
-    bullet("<b>11 CSV tables</b> — daily event counts with totals rows for "
-           "each species, individual identity summaries for leopard and cheetah, "
+    bullet("<b>12 CSV tables</b> — daily event counts with totals rows for "
+           "each species, individual identity summaries for lion, leopard and cheetah, "
            "and raw/summarised wildlife incident records"),
     bullet("<b>13 maps (HTML + PNG)</b> — herd-composition point maps for all "
            "species, herd-size bubble maps and bar charts for elephant and "
@@ -159,12 +159,14 @@ story += [
             ["total_rhino_events_recorded.csv",        "CSV", "Rhino"],
             ["rhino_sightings_events.html / .png",     "Map", "Rhino sightings"],
             ["total_lion_events_recorded.csv",         "CSV", "Lion"],
+            ["individual_lions_summary.csv",           "CSV", "Lion — by pride"],
             ["lion_sightings_events.html / .png",      "Map", "Lion — by pride"],
             ["total_leopard_events_recorded.csv",      "CSV", "Leopard"],
             ["individual_leopard_summary.csv",         "CSV", "Leopard — by individual"],
             ["leopard_sightings_events.html / .png",   "Map", "Leopard — by individual"],
             ["total_cheetah_events_recorded.csv",      "CSV", "Cheetah"],
             ["individual_cheetah_summary.csv",         "CSV", "Cheetah — by individual"],
+            ["cheetah_sightings_events.html / .png",   "Map", "Cheetah sightings"],
             ["giraffe_sightings_events.html / .png",   "Map", "Giraffe sightings"],
             ["hartebeest_sightings_events.html / .png","Map", "Hartebeest sightings"],
             ["wildlife_events_recorded.csv",           "CSV", "Wildlife incidents — raw"],
@@ -635,7 +637,10 @@ story += [
     make_table(
         [
             ["Output", "Description"],
-            ["total_lion_events_recorded.csv",   "Daily unique lion sighting count + Total row"],
+            ["total_lion_events_recorded.csv",    "Daily unique lion sighting count + Total row"],
+            ["individual_lions_summary.csv",
+             "Sighting count grouped by pride "
+             "(groupby: pride, nunique id → no_of_events)"],
             ["lion_sightings_events.html / .png", "Lion locations coloured by pride (tab20)"],
         ],
         [5.5*cm, W - 5.5*cm],
@@ -711,16 +716,12 @@ story += [
              "Daily unique cheetah sighting count + Total row"],
             ["individual_cheetah_summary.csv",
              "Sighting count grouped by individuals_present"],
+            ["cheetah_sightings_events.html / .png",
+             "Cheetah locations coloured by individuals_present (tab20). "
+             "Legend title: 'Individual'."],
         ],
         [5.5*cm, W - 5.5*cm],
     ),
-    sp(6),
-    note("The spec contains a known bug: the persist_cheetah_urls step "
-         "references <b>draw_leopard_map.return</b> instead of "
-         "draw_cheetah_map.return, and saves to the filename "
-         "<b>leopard_sightings_events.html</b>. As a result the cheetah map "
-         "HTML/PNG output will duplicate the leopard map rather than rendering "
-         "cheetah sighting locations."),
     PageBreak(),
 ]
 
@@ -882,6 +883,8 @@ story += [
              "Daily unique sighting count + Total"],
             ["total_lion_events_recorded.csv",         "Lion",
              "Daily unique sighting count + Total"],
+            ["individual_lions_summary.csv",           "Lion",
+             "Sighting count by pride"],
             ["total_leopard_events_recorded.csv",      "Leopard",
              "Daily unique sighting count + Total"],
             ["individual_leopard_summary.csv",         "Leopard",
@@ -913,6 +916,7 @@ story += [
             ["rhino_sightings_events.html / .png",      "Rhino",    "event_type"],
             ["lion_sightings_events.html / .png",       "Lion",     "pride"],
             ["leopard_sightings_events.html / .png",    "Leopard",  "individuals_present"],
+            ["cheetah_sightings_events.html / .png",    "Cheetah",  "individuals_present"],
             ["giraffe_sightings_events.html / .png",    "Giraffe",  "event_type"],
             ["hartebeest_sightings_events.html / .png", "Hartebeest","event_type"],
             ["wildlife_incidents_map.html / .png",      "Wildlife incidents","event_type (mapped to readable labels)"],
@@ -949,9 +953,9 @@ story += [
             ["Elephant",   "elephant_sighting_rep",  "1", "3 (composition + bar chart + bubble)"],
             ["Buffalo",    "buffalo_sighting_rep",   "1", "3 (composition + bar chart + bubble)"],
             ["Rhino",      "rhino_sighting_rep",     "1", "1"],
-            ["Lion",       "lion_sighting_rep",      "1", "1"],
+            ["Lion",       "lion_sighting_rep",      "2", "1"],
             ["Leopard",    "leopardsightingrep",     "2", "1"],
-            ["Cheetah",    "cheetah_sighting_rep",   "2", "1 (see bug note §10)"],
+            ["Cheetah",    "cheetah_sighting_rep",   "2", "1"],
             ["Giraffe",    "giraffe_sighting",       "0", "1"],
             ["Hartebeest", "hartebeest_sighting",    "0", "1"],
             ["Wildlife incidents",
