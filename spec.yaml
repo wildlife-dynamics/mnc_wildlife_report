@@ -1191,7 +1191,7 @@ workflow:
         get_radius: herd_size
         line_width_min_pixels: 1
         radius_units: pixels
-        radius_scale: 0.43 
+        radius_scale: 0.35
         opacity: 0.75
         stroked: true
       legend:
@@ -1656,7 +1656,7 @@ workflow:
         get_radius: herd_size
         line_width_min_pixels: 1
         radius_units: pixels
-        radius_scale: 0.43 
+        radius_scale: 0.043
         opacity: 0.75
         stroked: true
       legend:
