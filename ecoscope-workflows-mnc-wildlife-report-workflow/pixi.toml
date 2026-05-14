@@ -142,4 +142,4 @@ no-default-feature = true
 
 [tasks]
 docker-build = "docker buildx build -t ecoscope-workflows-mnc-wildlife-report-workflow ."
-ecoscope-workflows-mnc-wildlife-report-workflow = "bash run-with-traces.sh"
+ecoscope-workflows-mnc-wildlife-report-workflow = "python -m ecoscope_workflows_mnc_wildlife_report_workflow.cli"
