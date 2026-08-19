@@ -1,6 +1,6 @@
 # MNC Wildlife Report — User Guide
 
-This guide walks you through configuring and running the MNC Wildlife Report workflow, which processes elephant, buffalo, rhino, lion, leopard, cheetah, giraffe, hartebeest, and wildlife incident events from EarthRanger to produce tabular CSV reports, interactive maps, and herd-size charts.
+This guide walks you through configuring and running the MNC Wildlife Report workflow, which processes elephant, buffalo, rhino, lion, leopard, cheetah, giraffe, hartebeest, and wildlife incident events from EarthRanger to produce tabular CSV reports, interactive maps, herd-size charts, and a dashboard.
 
 ---
 
@@ -9,33 +9,28 @@ This guide walks you through configuring and running the MNC Wildlife Report wor
 The workflow delivers, for each run:
 
 **CSV tables**
-- **total_elephants_events_recorded.csv** — daily count of unique elephant sighting events with a grand total row
-- **total_buffalo_events_recorded.csv** — daily count of unique buffalo sighting events with a grand total row
-- **total_rhino_events_recorded.csv** — daily count of unique rhino sighting events with a grand total row
-- **total_lion_events_recorded.csv** — daily count of unique lion sighting events with a grand total row
-- **individual_lions_summary.csv** — lion sightings grouped by pride
-- **total_leopard_events_recorded.csv** — daily count of unique leopard sighting events with a grand total row
-- **individual_leopard_summary.csv** — leopard sightings grouped by individuals present
-- **total_cheetah_events_recorded.csv** — daily count of unique cheetah sighting events with a grand total row
-- **individual_cheetah_summary.csv** — cheetah sightings grouped by individuals present
-- **wildlife_events_recorded.csv** — raw wildlife incident records with all event fields
-- **wildlife_incidents_summary_table.csv** — pivot table of wildlife incidents by type and date
-- **wildlife_incidents_recorded_by_date.csv** — daily count of unique wildlife incident events with a grand total row
+- **wildlife_events.csv** — raw dump of all 13 fetched event types, before any per-branch processing
+- **wildlife_events_recorded.csv** — cleaned wildlife incident records (snares, fires, carcasses, injuries, veterinary treatments)
+- **wildlife_incidents_summary_table.csv** — pivot table of wildlife incidents by type
+- **wildlife_incidents_recorded_by_date.csv** — daily count of unique wildlife incident events
+- **overall_elephant_summary_table.csv** / **overall_buffalo_summary_table.csv** — sighting counts by herd composition (Bachelor, Mixed, Female + Calf, Unspecified)
+- **overall_lion_summary_table.csv** — sighting counts by pride
+- **overall_leopard_summary_table.csv** / **overall_cheetah_summary_table.csv** — sighting counts by individuals present
+- **overall_giraffe_summary_table.csv** / **overall_hart_summary_table.csv** / **overall_rhino_summary_table.csv** — daily sighting counts
 
-**Maps and charts (HTML + PNG)**
-- **elephant_sightings_events** — point map of elephant sightings coloured by herd composition
-- **elephant_herd_size_bar_chart** — bar chart of elephant herd size distribution across records
-- **elephant_herd_types_map** — bubble map of elephant sightings sized by herd size (Blues colormap)
-- **buffalo_sightings_events** — point map of buffalo sightings coloured by herd composition
-- **buffalo_herd_size_bar_chart** — bar chart of buffalo herd size distribution across records
-- **buffalo_herd_types_map** — bubble map of buffalo sightings sized by herd size (Blues colormap)
-- **rhino_sightings_events** — point map of rhino sightings on conservancy boundaries and parcels
-- **lion_sightings_events** — point map of lion sightings on conservancy boundaries and parcels
-- **leopard_sightings_events** — point map of leopard sightings on conservancy boundaries and parcels
-- **cheetah_sightings_events** — point map of cheetah sightings on conservancy boundaries and parcels
-- **giraffe_sightings_events** — point map of giraffe sightings on conservancy boundaries and parcels
-- **hartebeest_sightings_events** — point map of hartebeest sightings on conservancy boundaries and parcels
+**Maps and charts (interactive HTML)**
 - **wildlife_incidents_map** — point map of wildlife incidents coloured by incident type
+- **elephant_sightings_events** — point map of elephant sightings coloured by herd composition
+- **elephant_herd_size_bar_chart** — bar chart of elephant herd size distribution
+- **elephant_herd_types_map** — bubble map of elephant sightings, bubble size proportional to herd size
+- **buffalo_sightings_events** / **buffalo_herd_size_bar_chart** / **buffalo_herd_types_map** — the same three views for buffalo
+- **lion_pride_sightings_map** — point map of lion sightings coloured by pride
+- **leopard_sightings_map** / **cheetah_sightings_map** — point maps coloured by individuals present
+- **giraffe_sightings_map** / **hartebeest_sightings_map** / **rhino_sightings_map** — point maps of sightings
+
+**Dashboard**
+
+A single MNC Wildlife Report dashboard combining all of the above as 21 widgets — one map/chart/table widget per branch output described below.
 
 ---
 
@@ -55,7 +50,7 @@ Before running the workflow, ensure you have:
 In the Ecoscope app, navigate to the **Workflow Templates** tab and click **Add Workflow Template** (top-right). In the **Github Link** field that appears, paste the repository URL:
 
 ```
-https://github.com/wildlife-dynamics/mnc_wildlife_report.git
+https://github.com/wildlife-dynamics/mnc-wildlife-report.git
 ```
 
 Then click **Add Template** to register the template.
@@ -77,13 +72,11 @@ Navigate to **Data Sources** and click **Connect**. The **Connect Ecoscope to Ea
 
 Click **Connect** to save the data source.
 
-![EarthRanger Connection](data/screenshots/er_connection.png)
-
 ---
 
 ### Step 3 — Select the Workflow
 
-Go back to **Workflow Templates**. The newly added template appears as the **mnc_wildlife_report** card (showing the source repository URL). Click the card to open the workflow configuration form.
+Go back to **Workflow Templates**. The newly added template appears as the **mnc-wildlife-report** card (showing the source repository URL). Click the card to open the workflow configuration form.
 
 ---
 
@@ -91,28 +84,26 @@ Go back to **Workflow Templates**. The newly added template appears as the **mnc
 
 The configuration form is divided into three sections, each highlighted in the left-hand navigation panel.
 
-**Set workflow details**
+**Set Workflow Details**
 
 | Field | Description |
 |-------|-------------|
 | Workflow Name | A short name to identify this run (required) |
 | Workflow Description | Optional notes to differentiate this run from others (e.g. reporting month or site) |
 
-**Time range**
+**Time Range**
 
 | Field | Description |
 |-------|-------------|
-| Timezone | Select the local timezone (e.g. `Africa/Nairobi (UTC+03:00)`) |
+| Timezone | Select the local timezone (e.g. `Africa/Nairobi UTC+03:00`) |
 | Since | Start date and time — all wildlife events from this point are fetched |
 | Until | End date and time of the analysis window |
 
-**Connect to ER**
+**Connect to EarthRanger**
 
 Select the EarthRanger data source configured in Step 2 from the **Data Source** dropdown (e.g. `Mara North Conservancy`).
 
 Once all three sections are filled, click **Submit** to start the workflow.
-
-![Configure Workflow Details, Time Range, and Connect to ER](data/screenshots/configure_workflow.png)
 
 ---
 
@@ -120,18 +111,21 @@ Once all three sections are filled, click **Submit** to start the workflow.
 
 Once submitted, the runner will:
 
-1. Download the MNC community conservancy boundary and parcels files from Dropbox and prepare all geospatial map layers (conservancy boundaries, parcels, and conservancy text labels). Compute a global map zoom level from the overall grazing zones extent.
-2. Fetch all 13 event types from EarthRanger for the analysis period; extract the date from each event's timestamp; add a temporal index.
-3. **Elephant branch** — filter `elephant_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition, herd size, and demographic columns (female, male, sub-adult, under a year); replace missing herd composition with Unspecified; count unique events per day with a grand total row and save as `total_elephants_events_recorded.csv`; produce a herd-composition point map saved as `elephant_sightings_events.html` and `.png`; bin herd sizes into 7 intervals and produce a bar chart saved as `elephant_herd_size_bar_chart.html` and `.png`; produce a bubble map sized by herd size saved as `elephant_herd_types_map.html` and `.png`.
-4. **Buffalo branch** — filter `buffalo_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition and herd size; replace missing herd composition with Unspecified; count unique events per day with a grand total row and save as `total_buffalo_events_recorded.csv`; produce a herd-composition point map saved as `buffalo_sightings_events.html` and `.png`; bin herd sizes into 7 intervals and produce a bar chart saved as `buffalo_herd_size_bar_chart.html` and `.png`; produce a bubble map sized by herd size saved as `buffalo_herd_types_map.html` and `.png`.
-5. **Rhino branch** — filter `rhino_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_rhino_events_recorded.csv`; produce a point map saved as `rhino_sightings_events.html` and `.png`.
-6. **Lion branch** — filter `lion_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_lion_events_recorded.csv`; produce a pride-grouped individual summary and save as `individual_lions_summary.csv`; produce a point map saved as `lion_sightings_events.html` and `.png`.
-7. **Leopard branch** — filter `leopardsightingrep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_leopard_events_recorded.csv`; produce an individual identity summary grouped by individuals present and save as `individual_leopard_summary.csv`; produce a point map saved as `leopard_sightings_events.html` and `.png`.
-8. **Cheetah branch** — filter `cheetah_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; count unique events per day with a grand total row and save as `total_cheetah_events_recorded.csv`; produce an individual identity summary grouped by individuals present and save as `individual_cheetah_summary.csv`; produce a point map saved as `cheetah_sightings_events.html` and `.png`.
-9. **Giraffe branch** — filter `giraffe_sighting` events; resolve field IDs to display titles; normalise and flatten event details; produce a point map saved as `giraffe_sightings_events.html` and `.png`.
-10. **Hartebeest branch** — filter `hartebeest_sighting` events; resolve field IDs to display titles; normalise and flatten event details; produce a point map saved as `hartebeest_sightings_events.html` and `.png`.
-11. **Wildlife incidents branch** — filter `snare_rep`, `fire_rep`, `wildlife_injury_rep`, `wildlife_treatment_rep`, and `wildlife_carcass_rep` events; normalise event details; rename raw field keys to human-readable column names; save the full records as `wildlife_events_recorded.csv`; produce a pivot summary table by incident type and save as `wildlife_incidents_summary_table.csv`; count unique incidents per day with a grand total row and save as `wildlife_incidents_recorded_by_date.csv`; produce a point map coloured by incident type saved as `wildlife_incidents_map.html` and `.png`.
-12. Save all outputs to the directory specified by `ECOSCOPE_WORKFLOWS_RESULTS`.
+1. Download the MNC community conservancy boundary and parcels files from Dropbox; fix invalid geometries; build a grey conservancy-outline layer (filtered to `grazing_zone == Conservancy`) and a khaki-filled parcels layer. Compute the global map zoom level and centre from the Mara North Conservancy boundary extent — this view state is reused by every map in the workflow.
+2. Fetch all 13 event types from EarthRanger for the analysis period as a single batch; persist the raw dump as `wildlife_events.csv`; extract the date from each event's timestamp; add a temporal index.
+3. **Wildlife incidents branch** — filter `snare_rep`, `fire_rep`, `wildlife_injury_rep`, `wildlife_treatment_rep`, and `wildlife_carcass_rep` events; resolve field IDs to display titles; normalise and flatten event details; drop housekeeping columns; save the cleaned records as `wildlife_events_recorded.csv`; pivot by incident type and save as `wildlife_incidents_summary_table.csv`; count unique incidents per day and save as `wildlife_incidents_recorded_by_date.csv`; produce a point map coloured by incident type and save as `wildlife_incidents_map.html`.
+4. **Elephant branch** — filter `elephant_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; retain herd composition, herd size, and demographic columns (female, male, sub-adult, under a year); fill missing herd composition with Unspecified and missing counts with 0; standardise herd-composition labels (Bachelor, Mixed, Female + Calf, Unspecified); bin herd size into 5 equal-interval bins and produce a bar chart saved as `elephant_herd_size_bar_chart.html`; produce a clustered bubble map sized by herd size saved as `elephant_herd_types_map.html`; produce a herd-composition point map saved as `elephant_sightings_events.html`; summarise sightings by herd type and save as `overall_elephant_summary_table.csv`.
+5. **Buffalo branch** — same pipeline as elephant, without the female/male/sub-adult/under-a-year breakdown; herd size and herd composition only. Produces `buffalo_herd_size_bar_chart.html`, `buffalo_herd_types_map.html`, `buffalo_sightings_events.html`, and `overall_buffalo_summary_table.csv`.
+6. **Lion branch** — filter `lion_sighting_rep` events; resolve field IDs to display titles; normalise and flatten event details; retain female, male, group size, individuals present, pride, and young; fill missing pride with Undefined; produce a point map coloured by pride saved as `lion_pride_sightings_map.html`; summarise sightings by pride and save as `overall_lion_summary_table.csv`.
+7. **Leopard branch** — filter `leopardsightingrep` events; retain female, male, group size, individuals present, and young; fill missing individuals-present with Undefined; produce a point map coloured by individuals present saved as `leopard_sightings_map.html`; summarise sightings by individuals present and save as `overall_leopard_summary_table.csv`.
+8. **Cheetah branch** — identical pipeline to leopard; produces `cheetah_sightings_map.html` and `overall_cheetah_summary_table.csv`.
+9. **Giraffe branch** — filter `giraffe_sighting` events; normalise and flatten event details; produce a point map saved as `giraffe_sightings_map.html`; count sightings per day and save as `overall_giraffe_summary_table.csv`.
+10. **Hartebeest branch** — filter `hartebeest_sighting` events; same pipeline as giraffe; produces `hartebeest_sightings_map.html` and `overall_hart_summary_table.csv`.
+11. **Rhino branch** — filter `rhino_sighting_rep` events; same pipeline as giraffe and hartebeest; produces `rhino_sightings_map.html` and `overall_rhino_summary_table.csv`.
+12. Assemble the **MNC Wildlife Report dashboard** from all 21 map, chart, and table widgets produced above.
+13. Save all outputs to the directory specified by `ECOSCOPE_WORKFLOWS_RESULTS`.
+
+> Every task in the workflow is automatically skipped if its input data is empty or an upstream step was skipped, so a run with no events of a given type simply omits that branch's outputs rather than failing. Widget-creation steps are the exception — they always run so that a placeholder widget still appears on the dashboard even if the branch behind it was skipped.
 
 ---
 
@@ -143,33 +137,63 @@ All outputs are written to `$ECOSCOPE_WORKFLOWS_RESULTS/`.
 
 | File | Description |
 |------|-------------|
-| `total_elephants_events_recorded.csv` | Daily unique elephant sighting count (date, no_of_events) with a grand Total row |
-| `total_buffalo_events_recorded.csv` | Daily unique buffalo sighting count (date, no_of_events) with a grand Total row |
-| `total_rhino_events_recorded.csv` | Daily unique rhino sighting count (date, no_of_events) with a grand Total row |
-| `total_lion_events_recorded.csv` | Daily unique lion sighting count (date, no_of_events) with a grand Total row |
-| `individual_lions_summary.csv` | Lion sightings grouped by pride |
-| `total_leopard_events_recorded.csv` | Daily unique leopard sighting count (date, no_of_events) with a grand Total row |
-| `individual_leopard_summary.csv` | Leopard sightings grouped by individuals present |
-| `total_cheetah_events_recorded.csv` | Daily unique cheetah sighting count (date, no_of_events) with a grand Total row |
-| `individual_cheetah_summary.csv` | Cheetah sightings grouped by individuals present |
-| `wildlife_events_recorded.csv` | Raw wildlife incident records with all event fields |
-| `wildlife_incidents_summary_table.csv` | Pivot table of incident counts by type (Fire, Snare, Wildlife carcass, Injured wildlife, Veterinary treatment) |
-| `wildlife_incidents_recorded_by_date.csv` | Daily unique wildlife incident count (date, no_of_events) with a grand Total row |
+| `wildlife_events.csv` | Raw dump of all 13 fetched event types before branch processing |
+| `wildlife_events_recorded.csv` | Cleaned wildlife incident records (snares, fires, carcasses, injuries, veterinary treatments) |
+| `wildlife_incidents_summary_table.csv` | Pivot table of wildlife incidents by type (Fire, Snare, Wildlife carcass, Injured wildlife, Veterinary treatment) |
+| `wildlife_incidents_recorded_by_date.csv` | Daily unique wildlife incident count (date, no_of_events) |
+| `overall_elephant_summary_table.csv` | Elephant sighting counts by herd type (Bachelor, Mixed, Female + Calf, Unspecified) |
+| `overall_buffalo_summary_table.csv` | Buffalo sighting counts by herd type |
+| `overall_lion_summary_table.csv` | Lion sighting counts by pride |
+| `overall_leopard_summary_table.csv` | Leopard sighting counts by individuals present |
+| `overall_cheetah_summary_table.csv` | Cheetah sighting counts by individuals present |
+| `overall_giraffe_summary_table.csv` | Daily unique giraffe sighting count |
+| `overall_hart_summary_table.csv` | Daily unique hartebeest sighting count |
+| `overall_rhino_summary_table.csv` | Daily unique rhino sighting count |
 
 ### Maps and Charts
 
 | File | Description |
 |------|-------------|
-| `elephant_sightings_events.html` / `.png` | Elephant sighting locations coloured by herd composition |
-| `elephant_herd_size_bar_chart.html` / `.png` | Bar chart of elephant herd size frequency distribution |
-| `elephant_herd_types_map.html` / `.png` | Bubble map of elephant sightings; point radius proportional to herd size |
-| `buffalo_sightings_events.html` / `.png` | Buffalo sighting locations coloured by herd composition |
-| `buffalo_herd_size_bar_chart.html` / `.png` | Bar chart of buffalo herd size frequency distribution |
-| `buffalo_herd_types_map.html` / `.png` | Bubble map of buffalo sightings; point radius proportional to herd size |
-| `rhino_sightings_events.html` / `.png` | Rhino sighting locations on conservancy boundaries and parcels |
-| `lion_sightings_events.html` / `.png` | Lion sighting locations on conservancy boundaries and parcels |
-| `leopard_sightings_events.html` / `.png` | Leopard sighting locations on conservancy boundaries and parcels |
-| `cheetah_sightings_events.html` / `.png` | Cheetah sighting locations on conservancy boundaries and parcels |
-| `giraffe_sightings_events.html` / `.png` | Giraffe sighting locations on conservancy boundaries and parcels |
-| `hartebeest_sightings_events.html` / `.png` | Hartebeest sighting locations on conservancy boundaries and parcels |
-| `wildlife_incidents_map.html` / `.png` | Wildlife incident locations coloured by incident type |
+| `wildlife_incidents_map.html` | Wildlife incident locations coloured by incident type |
+| `elephant_sightings_events.html` | Elephant sighting locations coloured by herd composition |
+| `elephant_herd_size_bar_chart.html` | Bar chart of elephant herd size frequency distribution (5 bins) |
+| `elephant_herd_types_map.html` | Clustered bubble map of elephant sightings; bubble size proportional to herd size |
+| `buffalo_sightings_events.html` | Buffalo sighting locations coloured by herd composition |
+| `buffalo_herd_size_bar_chart.html` | Bar chart of buffalo herd size frequency distribution (5 bins) |
+| `buffalo_herd_types_map.html` | Clustered bubble map of buffalo sightings; bubble size proportional to herd size |
+| `lion_pride_sightings_map.html` | Lion sighting locations coloured by pride |
+| `leopard_sightings_map.html` | Leopard sighting locations coloured by individuals present |
+| `cheetah_sightings_map.html` | Cheetah sighting locations coloured by individuals present |
+| `giraffe_sightings_map.html` | Giraffe sighting locations on conservancy boundaries and parcels |
+| `hartebeest_sightings_map.html` | Hartebeest sighting locations on conservancy boundaries and parcels |
+| `rhino_sightings_map.html` | Rhino sighting locations on conservancy boundaries and parcels |
+
+## Dashboard
+
+The workflow run also produces the **MNC Wildlife Report dashboard**, viewable in the workflow runner, with 21 widgets:
+
+| Widget | Source |
+|--------|--------|
+| Wildlife Incident Map | `wildlife_incidents_map.html` |
+| Elephant Herd Size Map | `elephant_herd_types_map.html` |
+| Elephant Herd Composition Map | `elephant_sightings_events.html` |
+| Elephant Herd Size Distribution | `elephant_herd_size_bar_chart.html` |
+| Elephant Herd Composition Summary | `overall_elephant_summary_table.csv` |
+| Buffalo Herd Size Map | `buffalo_herd_types_map.html` |
+| Buffalo Herd Composition Map | `buffalo_sightings_events.html` |
+| Buffalo Herd Size Distribution | `buffalo_herd_size_bar_chart.html` |
+| Buffalo Herd Composition Summary | `overall_buffalo_summary_table.csv` |
+| Lion Sightings Map | `lion_pride_sightings_map.html` |
+| Lion Sightings Summary | `overall_lion_summary_table.csv` |
+| Leopard Sightings Map | `leopard_sightings_map.html` |
+| Leopard Sightings Summary | `overall_leopard_summary_table.csv` |
+| Cheetah Sightings Map | `cheetah_sightings_map.html` |
+| Cheetah Sightings Summary | `overall_cheetah_summary_table.csv` |
+| Giraffe Sightings Map | `giraffe_sightings_map.html` |
+| Giraffe Sightings Summary | `overall_giraffe_summary_table.csv` |
+| Hartebeest Sightings Map | `hartebeest_sightings_map.html` |
+| Hartebeest Sightings Summary | `overall_hart_summary_table.csv` |
+| Rhino Sightings Map | `rhino_sightings_map.html` |
+| Rhino Sightings Summary | `overall_rhino_summary_table.csv` |
+
+> Each table widget is sortable and filterable in place; downloading directly from the widget is disabled — use the corresponding CSV output file for that.
