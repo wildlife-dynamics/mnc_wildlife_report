@@ -462,6 +462,18 @@ workflow:
       title: "Wildlife Incident Map"
       data: ${{ workflow.persist_wildlife_urls.return }}
 
+  - name: Convert wildlife incident map to png
+    id: convert_wildlife_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_wildlife_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
+
   # Wildlife sighting Events
   # Elephant Events
   - name: Retrieve elephant events
@@ -654,7 +666,19 @@ workflow:
       title: "Elephant Herd Size Distribution"
       data: ${{ workflow.persist_elephant_bar.return }}
 
-  - name: Drop null geometry from elephant events 
+  - name: Convert elephant herd size bar chart to png
+    id: convert_ele_bar_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_elephant_bar.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 10
+        max_concurrent_pages: 1
+
+  - name: Drop null geometry from elephant events
     id: drop_null_eles
     task: ecoscope_workflows_ext_custom.tasks.transformation.drop_null_geometry 
     partial: 
@@ -672,8 +696,8 @@ workflow:
         aggregate: true
         cluster_padding: 1.0
         cluster_max_radius: 40
-        get_fill_color: [0, 191, 255]
-        get_line_color: [0, 191, 255]
+        get_fill_color: [100, 149, 237]
+        get_line_color: [100, 149, 237]
         get_radius: "herd_size"
         get_line_width: 1
         radius_units:  "pixels"
@@ -702,7 +726,7 @@ workflow:
         title: Herd Size
         values:
           - label: Herds
-            color: "#00bfff"
+            color: "#6495ed"
 
   - name: Combine styled layers with elephant herd size events 
     id: combine_ele_herd
@@ -743,6 +767,18 @@ workflow:
     partial:
       title: "Elephant Herd Size Map"
       data: ${{ workflow.persist_ele_herd_urls.return }}
+
+  - name: Convert elephant herd size map to png
+    id: convert_ele_herd_size_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_ele_herd_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
 
   - name: Apply colormap for elephant herd types
     id: ele_herd_types 
@@ -812,6 +848,17 @@ workflow:
       title: "Elephant Herd Composition Map"
       data: ${{ workflow.persist_elephant_urls.return }}
 
+  - name: Convert elephant herd composition map to png
+    id: convert_ele_herd_comp_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_elephant_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
 
   #   Buffalo
   - name: Retrieve buffalo events
@@ -1000,7 +1047,19 @@ workflow:
       title: "Buffalo Herd Size Distribution"
       data: ${{ workflow.persist_buffalo_bar.return }}
 
-  - name: Drop null geometry from buffalo events 
+  - name: Convert buffalo herd size bar chart to png
+    id: convert_buff_bar_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_buffalo_bar.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 10
+        max_concurrent_pages: 1
+
+  - name: Drop null geometry from buffalo events
     id: drop_null_buff
     task: ecoscope_workflows_ext_custom.tasks.transformation.drop_null_geometry 
     partial: 
@@ -1018,8 +1077,8 @@ workflow:
         aggregate: true
         cluster_padding: 1.0
         cluster_max_radius: 40
-        get_fill_color: [0, 191, 255]
-        get_line_color: [0, 191, 255]
+        get_fill_color: [100, 149, 237]
+        get_line_color: [100, 149, 237]
         get_radius: "herd_size"
         get_line_width: 1
         radius_units:  "pixels"
@@ -1048,7 +1107,7 @@ workflow:
         title: Herd Size
         values:
           - label: Herds
-            color: "#00bfff"
+            color: "#6699ff"
 
   - name: Combine styled layers with buffalo herd size events 
     id: combine_buff_herd
@@ -1089,6 +1148,18 @@ workflow:
     partial:
       title: "Buffalo Herd Size Map"
       data: ${{ workflow.persist_buff_herd_urls.return }}
+
+  - name: Convert buffalo herd size map to png
+    id: convert_buff_herd_size_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_buff_herd_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
 
   - name: Apply colormap for buffalo herd types
     id: buff_herd_types
@@ -1157,6 +1228,18 @@ workflow:
     partial:
       title: "Buffalo Herd Composition Map"
       data: ${{ workflow.persist_buffalo_urls.return }}
+
+  - name: Convert buffalo herd composition map to png
+    id: convert_buff_herd_comp_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_buffalo_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
 
   # Lion
   - name: Retrieve lion events
@@ -1319,7 +1402,19 @@ workflow:
       title: "Lion Sightings Map"
       data: ${{ workflow.persist_lion_urls.return }}
 
-  # Leopard sighting 
+  - name: Convert lion sightings map to png
+    id: convert_lion_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_lion_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
+
+  # Leopard sighting
   - name: Retrieve leopard events
     id: retrieve_leo_events 
     task: filter_df 
@@ -1479,7 +1574,19 @@ workflow:
       title: "Leopard Sightings Map"
       data: ${{ workflow.persist_leo_urls.return }}
 
-  # Cheetah 
+  - name: Convert leopard sightings map to png
+    id: convert_leo_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_leo_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
+
+  # Cheetah
   - name: Retrieve cheetah events
     id: retrieve_chee_events 
     task: filter_df 
@@ -1639,7 +1746,19 @@ workflow:
       title: "Cheetah Sightings Map"
       data: ${{ workflow.persist_chee_urls.return }}
 
-  # Giraffe 
+  - name: Convert cheetah sightings map to png
+    id: convert_chee_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_chee_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
+
+  # Giraffe
   - name: Retrieve giraffe events
     id: retrieve_gir_events 
     task: filter_df 
@@ -1740,6 +1859,18 @@ workflow:
     partial:
       title: "Giraffe Sightings Map"
       data: ${{ workflow.persist_gir_urls.return }}
+
+  - name: Convert giraffe sightings map to png
+    id: convert_gir_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_gir_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
 
   # Rhino
   - name: Retrieve rhino events
@@ -1843,6 +1974,18 @@ workflow:
       title: "Rhino Sightings Map"
       data: ${{ workflow.persist_rhi_urls.return }}
 
+  - name: Convert rhino sightings map to png
+    id: convert_rhi_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_rhi_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
+
   # Hartebeest
   - name: Retrieve hartebeest events
     id: retrieve_hart_events 
@@ -1944,6 +2087,18 @@ workflow:
     partial:
       title: "Hartebeest Sightings Map"
       data: ${{ workflow.persist_hart_urls.return }}
+
+  - name: Convert hartebeest sightings map to png
+    id: convert_hart_map_png
+    task: html_to_png
+    partial:
+      output_dir: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
+      html_path: ${{ workflow.persist_hart_urls.return }}
+      config:
+        full_page: false
+        device_scale_factor: 2.0
+        wait_for_timeout: 40000
+        max_concurrent_pages: 1
 
   # Summary tables
   - name: overall elephant summary table 

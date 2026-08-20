@@ -75,6 +75,7 @@ from ecoscope.platform.tasks.transformation import (
     normalize_json_column as normalize_json_column,
 )
 from ecoscope_workflows_ext_big_life.tasks.results import draw_map as draw_map_2
+from ecoscope_workflows_ext_custom.tasks.io import html_to_png as html_to_png
 from ecoscope_workflows_ext_custom.tasks.results import (
     create_scatterplot_layer as create_scatterplot_layer_1,
 )
@@ -1107,6 +1108,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
+    convert_wildlife_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_wildlife_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_wildlife_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_wildlife_map_png") or {}),
+        )
+        .call()
+    )
+
     retrieve_elephant_events = (
         task(filter_df)
         .validate()
@@ -1486,6 +1514,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
+    convert_ele_bar_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_ele_bar_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_elephant_bar,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 10,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_ele_bar_png") or {}),
+        )
+        .call()
+    )
+
     drop_null_eles = (
         task(drop_null_geometry_1)
         .validate()
@@ -1528,8 +1583,8 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
                 "aggregate": True,
                 "cluster_padding": 1.0,
                 "cluster_max_radius": 40,
-                "get_fill_color": [0, 191, 255],
-                "get_line_color": [0, 191, 255],
+                "get_fill_color": [100, 149, 237],
+                "get_line_color": [100, 149, 237],
                 "get_radius": "herd_size",
                 "get_line_width": 1,
                 "radius_units": "pixels",
@@ -1557,7 +1612,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             },
             legend={
                 "title": "Herd Size",
-                "values": [{"label": "Herds", "color": "#00bfff"}],
+                "values": [{"label": "Herds", "color": "#6495ed"}],
             },
             **(params.get("eles_clustered_layer") or {}),
         )
@@ -1649,6 +1704,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Elephant Herd Size Map",
             data=persist_ele_herd_urls,
             **(params.get("ele_herd_size_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_ele_herd_size_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_ele_herd_size_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_ele_herd_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_ele_herd_size_png") or {}),
         )
         .call()
     )
@@ -1796,6 +1878,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Elephant Herd Composition Map",
             data=persist_elephant_urls,
             **(params.get("ele_herd_comp_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_ele_herd_comp_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_ele_herd_comp_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_elephant_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_ele_herd_comp_png") or {}),
         )
         .call()
     )
@@ -2175,6 +2284,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
+    convert_buff_bar_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_buff_bar_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_buffalo_bar,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 10,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_buff_bar_png") or {}),
+        )
+        .call()
+    )
+
     drop_null_buff = (
         task(drop_null_geometry_1)
         .validate()
@@ -2217,8 +2353,8 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
                 "aggregate": True,
                 "cluster_padding": 1.0,
                 "cluster_max_radius": 40,
-                "get_fill_color": [0, 191, 255],
-                "get_line_color": [0, 191, 255],
+                "get_fill_color": [100, 149, 237],
+                "get_line_color": [100, 149, 237],
                 "get_radius": "herd_size",
                 "get_line_width": 1,
                 "radius_units": "pixels",
@@ -2246,7 +2382,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             },
             legend={
                 "title": "Herd Size",
-                "values": [{"label": "Herds", "color": "#00bfff"}],
+                "values": [{"label": "Herds", "color": "#6699ff"}],
             },
             **(params.get("buff_clustered_layer") or {}),
         )
@@ -2338,6 +2474,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Buffalo Herd Size Map",
             data=persist_buff_herd_urls,
             **(params.get("buff_herd_size_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_buff_herd_size_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_buff_herd_size_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_buff_herd_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_buff_herd_size_png") or {}),
         )
         .call()
     )
@@ -2485,6 +2648,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Buffalo Herd Composition Map",
             data=persist_buffalo_urls,
             **(params.get("buff_herd_comp_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_buff_herd_comp_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_buff_herd_comp_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_buffalo_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_buff_herd_comp_png") or {}),
         )
         .call()
     )
@@ -2840,6 +3030,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
+    convert_lion_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_lion_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_lion_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_lion_map_png") or {}),
+        )
+        .call()
+    )
+
     retrieve_leo_events = (
         task(filter_df)
         .validate()
@@ -3186,6 +3403,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Leopard Sightings Map",
             data=persist_leo_urls,
             **(params.get("leo_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_leo_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_leo_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_leo_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_leo_map_png") or {}),
         )
         .call()
     )
@@ -3540,6 +3784,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
+    convert_chee_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_chee_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_chee_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_chee_map_png") or {}),
+        )
+        .call()
+    )
+
     retrieve_gir_events = (
         task(filter_df)
         .validate()
@@ -3770,6 +4041,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Giraffe Sightings Map",
             data=persist_gir_urls,
             **(params.get("gir_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_gir_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_gir_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_gir_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_gir_map_png") or {}),
         )
         .call()
     )
@@ -4008,6 +4306,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
+    convert_rhi_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_rhi_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_rhi_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_rhi_map_png") or {}),
+        )
+        .call()
+    )
+
     retrieve_hart_events = (
         task(filter_df)
         .validate()
@@ -4238,6 +4563,33 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             title="Hartebeest Sightings Map",
             data=persist_hart_urls,
             **(params.get("hart_map_widget") or {}),
+        )
+        .call()
+    )
+
+    convert_hart_map_png = (
+        task(html_to_png)
+        .validate()
+        .set_task_instance_id("convert_hart_map_png")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(
+            output_dir=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
+            html_path=persist_hart_urls,
+            config={
+                "full_page": False,
+                "device_scale_factor": 2.0,
+                "wait_for_timeout": 40000,
+                "max_concurrent_pages": 1,
+            },
+            **(params.get("convert_hart_map_png") or {}),
         )
         .call()
     )
